@@ -31,6 +31,59 @@ Station = Base.classes.station
 session = Session(engine)
 
 date_range = pd.date_range(start='1/1/2010', end='1/1/2011')
+###########################################
+#
+# This below section of code finds the latest date
+# in the data set and the first date
+#
+##########################################
+
+month_list = list(range(1,13))
+day_list = list(range(1,32))
+year_list = list(range(1995,2025))
+day_max = 0
+month_max = 0
+year_max = 0
+for year in year_list:
+    for month in month_list:
+        for day in day_list:
+            if engine.execute('select * from Measurement where date = "'
+                              +str(year)+'-'+str(month)+'-'+str(day)+'"').fetchall():
+                day_max = day
+                month_max = month
+                year_max = year
+                
+
+month_list.sort(reverse = True) 
+day_list.sort(reverse = True) 
+year_list.sort(reverse = True) 
+day_min = 0
+month_min = 0
+year_min = 0
+for year in year_list:
+    for month in month_list:
+        for day in day_list:
+            if engine.execute('select * from Measurement where date = "'
+                              +str(year)+'-'+str(month)+'-'+str(day)+'"').fetchall():
+                day_min = day
+                month_min = month
+                year_min = year
+
+
+
+date_min_ = str(year_min)+"-"+str(month_min)+"-"+str(day_min)
+date_max_ = str(year_max)+"-"+str(month_max)+"-"+str(day_max)
+
+date_dash_min = str(year_min)+"/"+str(month_min)+"/"+str(day_min)
+date_dash_max = str(year_max)+"/"+str(month_max)+"/"+str(day_max)
+date_dash_max_minus_one_year = str(year_max-1)+"/"+str(month_max)+"/"+str(day_max)             
+                
+            
+
+
+
+
+
 
 
 
@@ -44,7 +97,7 @@ def index():
 @app.route("/api/v1.0/precipitation")
 def precipitation():
         # Design a query to retrieve the last 12 months of precipitation data and plot the results
-    date_range = pd.date_range(start='1/1/2010', end='1/1/2011')
+    date_range = pd.date_range(start=date_dash_max_minus_one_year, end=date_dash_max)
     date_range_array = date_range.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     date_ray = []
     prcp_array = []
@@ -82,14 +135,14 @@ def precipitation():
 def stations():
     temp_dict = {}
     for x in list(range(0,len(engine.execute("select station from station").fetchall()))):
-        temp_dict.update({engine.execute("select station from station").fetchall()[x][0]:engine.execute("select station from station").fetchall()[x][0]})
+        temp_dict.update({x:engine.execute("select station from station").fetchall()[x][0]})
     
     return jsonify(temp_dict)
 
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-    date_range = pd.date_range(start='1/1/2010', end='1/1/2011')
+    date_range = pd.date_range(start=date_dash_max_minus_one_year, end=date_dash_max)
     date_range_array = date_range.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     for_dict = []
     date_ray = []
@@ -127,7 +180,7 @@ def tobs():
 
 @app.route("/api/v1.0/<month>/<day>/<year>")
 def start(month,day,year):
-    date_range = pd.date_range(start=month+"/"+day+"/"+year, end='08/23/2017')
+    date_range = pd.date_range(start=month+"/"+day+"/"+year, end=date_dash_max)
     date_range_array = date_range.format(formatter=lambda x: x.strftime('%Y-%m-%d'))
     for_dict = []
     date_ray =[]

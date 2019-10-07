@@ -5,8 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
-    
+    <button onclick="window.location.href = '/api/v1.0/precipitation';">Precipitation Data</button> 
+    <br>
+
+    <button onclick="window.location.href = '/api/v1.0/stations';">Stations</button>
+
+    <div class="search-container">
+        
+          <input class="search1" type="text" placeholder="Enter Date (mm/dd/yyyy)" name="search">
+          
+          <button id="button1" onclick="onTheClick();" >Enter One Date</button>
+        
+      </div>
+      
+      
+      
+      <div class="search-container">
+        
+            <input class="search2" type="text" placeholder="First Date (mm/dd/yyyy) " name="search">
+            <input class="search3" type="text" placeholder="Second Date (mm/dd/yyyy)" name="search">
+            
+            <button id="button2" onclick="onTheClick2();" >Enter Two Dates</button>
+          
+        </div>
+
+
+
+
+<script>
+  
+
+function onTheClick(){
+    var inputv = d3.select(".search1").property("value");
+console.log(inputv.split("/"));
+var dateLink = "/api/v1.0/"+inputv.split("/")[0]+"/"+inputv.split("/")[1]+"/"+inputv.split("/")[2];
+
+window.location.href=dateLink;
+}
+
+function onTheClick2(){
+    var input_click1 = d3.select(".search2").property("value");
+    var input_click2 = d3.select(".search3").property("value");
+
+var dateLink = "/api/v1.0/"+input_click1.split("/")[0]+"/"+input_click1.split("/")[1]+"/"+input_click1.split("/")[2]
++"/"+input_click2.split("/")[0]+"/"+input_click2.split("/")[1]+"/"+input_click2.split("/")[2];
+
+window.location.href=dateLink;
+}
+
+</script>
 </body>
 </html>
